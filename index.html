@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Question Refinement Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .status-bar {
+            background: #f0f0f0;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            text-align: left;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px 15px 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 15px;
+        }
+
+        .message-label {
+            font-size: 0.75em;
+            color: #999;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .similar-questions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .similar-questions h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .similar-question-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .similarity-score {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .action-btn.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #sendBtn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #sendBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px 15px 15px 0;
+            max-width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .typing-indicator.show {
+            display: inline-block;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            display: inline-block;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .comparison-box {
+            background: #f0f7ff;
+            border: 1px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .comparison-item {
+            margin-bottom: 10px;
+        }
+
+        .comparison-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+        }
+
+        .comparison-item p {
+            font-size: 0.9em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🔢 Mathematical Question Refinement Chatbot</h1>
+            <p>AI-powered validation and refinement for mathematical questions</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator"></div>
+            <span id="statusText">Ready to help you refine your mathematical question</span>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-label">Assistant</div>
+                <div class="message-content">
+                    Hello! I'm here to help you create a clear, well-formatted mathematical question. 
+                    <br><br>
+                    <strong>How it works:</strong><br>
+                    1. Enter your mathematical question<br>
+                    2. I'll validate if it's a proper mathematical question<br>
+                    3. I'll refine it for clarity and grammar<br>
+                    4. You can request changes until satisfied<br>
+                    5. I'll check for similar existing questions<br>
+                    <br>
+                    Please enter your mathematical question below to get started.
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="input-group">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Enter your mathematical question..."
+                    rows="2"
+                ></textarea>
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:8000';
+        const SESSION_ID = 'session_' + Date.now();
+        
+        // State management
+        let currentPhase = 'input';  // input, validation, refinement, similarity, complete
+        let currentQuestion = '';
+        let refinedQuestion = '';
+
+        // DOM elements
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusText = document.getElementById('statusText');
+
+        // Event listeners
+        sendBtn.addEventListener('click', handleSend);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // Main message handler
+        async function handleSend() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage('user', message);
+            messageInput.value = '';
+
+            // Show typing indicator
+            showTyping();
+
+            try {
+                if (currentPhase === 'input' || currentPhase === 'validation') {
+                    await handleValidation(message);
+                } else if (currentPhase === 'refinement') {
+                    await handleRefinement(message);
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage('bot', `Error: ${error.message}. Please try again.`);
+            }
+        }
+
+        // Validation phase
+        async function handleValidation(message) {
+            updateStatus('Validating your question...');
+            
+            const response = await fetch(`${API_BASE_URL}/validate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, session_id: SESSION_ID })
+            });
+
+            const data = await response.json();
+            hideTyping();
+
+            if (data.is_valid) {
+                currentQuestion = message;
+                addMessage('bot', `✅ <strong>Valid Mathematical Question!</strong><br><br>${data.feedback}<br><br>Now let me refine it for better clarity and formatting...`);
+                
+                // Automatically proceed to refinement
+                setTimeout(() => proceedToRefinement(), 1500);
+            } else {
+                addMessage('bot', `❌ <strong>Not a valid mathematical question</strong><br><br>${data.feedback}<br><br>Please revise your question and try again.`);
+                updateStatus('Waiting for a valid mathematical question');
+                currentPhase = 'validation';
+            }
+        }
+
+        // Proceed to refinement
+        async function proceedToRefinement() {
+            showTyping();
+            updateStatus('Refining your question...');
+
+            const response = await fetch(`${API_BASE_URL}/refine`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: currentQuestion, session_id: SESSION_ID })
+            });
+
+            const data = await response.json();
+            hideTyping();
+
+            refinedQuestion = data.refined_question;
+            
+            const comparisonHTML = `
+                <div class="comparison-box">
+                    <div class="comparison-item">
+                        <strong>📝 Original Question:</strong>
+                        <p>${data.original_question}</p>
+                    </div>
+                    <div class="comparison-item">
+                        <strong>✨ Refined Question:</strong>
+                        <p>${data.refined_question}</p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn success" onclick="acceptRefinement()">✓ Accept Refined Version</button>
+                    <button class="action-btn secondary" onclick="requestChanges()">✎ Request Changes</button>
+                </div>
+            `;
+
+            addMessage('bot', `<strong>Question Refined!</strong><br><br>${data.message}<br>${comparisonHTML}`);
+            updateStatus('Review the refined question');
+            currentPhase = 'refinement';
+        }
+
+        // Accept refinement and check similarity
+        async function acceptRefinement() {
+            showTyping();
+            updateStatus('Checking for similar questions...');
+
+            const response = await fetch(`${API_BASE_URL}/finalize`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: refinedQuestion, session_id: SESSION_ID })
+            });
+
+            const data = await response.json();
+            hideTyping();
+
+            let similarHTML = '';
+            if (data.similar_questions && data.similar_questions.length > 0) {
+                similarHTML = `
+                    <div class="similar-questions">
+                        <h4>⚠️ Similar Questions Found (>80% similarity):</h4>
+                        ${data.similar_questions.map(q => `
+                            <div class="similar-question-item">
+                                <strong>${q.domain} - ${q.subdomain}</strong><br>
+                                ${q.question}<br>
+                                <span class="similarity-score">Similarity: ${(q.similarity_score * 100).toFixed(1)}%</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                similarHTML = `<div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 10px; padding: 15px; margin-top: 10px; color: #155724;">
+                    ✅ No similar questions found in the database. Your question appears to be unique!
+                </div>`;
+            }
+
+            addMessage('bot', `
+                <strong>🎉 Question Finalized!</strong><br><br>
+                <strong>Your final question:</strong><br>
+                <em>"${data.final_question}"</em><br>
+                ${similarHTML}
+                <div class="action-buttons" style="margin-top: 15px;">
+                    <button class="action-btn primary" onclick="startOver()">✨ Refine Another Question</button>
+                </div>
+            `);
+            
+            updateStatus('Question finalized successfully!');
+            currentPhase = 'complete';
+        }
+
+        // Request changes to refinement
+        function requestChanges() {
+            addMessage('bot', 'Please describe what changes you\'d like me to make to the refined question:');
+            currentPhase = 'refinement';
+        }
+
+        // Handle refinement with feedback
+        async function handleRefinement(feedback) {
+            showTyping();
+            updateStatus('Applying your feedback...');
+
+            const response = await fetch(`${API_BASE_URL}/refine`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: feedback, session_id: SESSION_ID })
+            });
+
+            const data = await response.json();
+            hideTyping();
+
+            refinedQuestion = data.refined_question;
+
+            const comparisonHTML = `
+                <div class="comparison-box">
+                    <div class="comparison-item">
+                        <strong>📝 Original Question:</strong>
+                        <p>${data.original_question}</p>
+                    </div>
+                    <div class="comparison-item">
+                        <strong>✨ Updated Refined Question:</strong>
+                        <p>${data.refined_question}</p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn success" onclick="acceptRefinement()">✓ Accept This Version</button>
+                    <button class="action-btn secondary" onclick="requestChanges()">✎ Request More Changes</button>
+                </div>
+            `;
+
+            addMessage('bot', `<strong>Question Updated!</strong><br><br>Your feedback has been incorporated.<br>${comparisonHTML}`);
+        }
+
+        // Start over
+        function startOver() {
+            currentPhase = 'input';
+            currentQuestion = '';
+            refinedQuestion = '';
+            updateStatus('Ready for a new question');
+            addMessage('bot', 'Ready to refine another mathematical question! Please enter your question below.');
+        }
+
+        // UI Helper functions
+        function addMessage(sender, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const label = sender === 'bot' ? 'Assistant' : 'You';
+            messageDiv.innerHTML = `
+                <div class="message-label">${label}</div>
+                <div class="message-content">${content}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator show';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            sendBtn.disabled = true;
+        }
+
+        function hideTyping() {
+            const typingDiv = document.getElementById('typingIndicator');
+            if (typingDiv) typingDiv.remove();
+            sendBtn.disabled = false;
+        }
+
+        function updateStatus(text) {
+            statusText.textContent = text;
+        }
+
+        // Make functions globally available
+        window.acceptRefinement = acceptRefinement;
+        window.requestChanges = requestChanges;
+        window.startOver = startOver;
+    </script>
+</body>
+</html>

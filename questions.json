@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "question": "Let V be a finite-dimensional vector space and T: V → V a linear operator. Prove or disprove: If all eigenvalues of T have absolute value less than 1, then T^n → 0 as n → ∞ (operator convergence).",
+        "domain": "Linear Algebra",
+        "subdomain": "Spectral Theory",
+        "complexity": "graduate"
+    },
+    {
+        "id": 2,
+        "question": "Compute the fundamental group π₁(S¹ ∨ S¹), where ∨ denotes the wedge sum of topological spaces.",
+        "domain": "Topology",
+        "subdomain": "Algebraic Topology",
+        "complexity": "graduate"
+    },
+    {
+        "id": 3,
+        "question": "Solve the PDE u_t = u_{xx} on (0,π)×(0,∞) with boundary conditions u(0,t)=0, u(π,t)=0 and initial condition u(x,0)=x(π−x).",
+        "domain": "Partial Differential Equations",
+        "subdomain": "Heat Equation",
+        "complexity": "graduate"
+    },
+    {
+        "id": 4,
+        "question": "Let (X,𝔅,μ) be a measure space and f_n → f almost everywhere with |f_n| ≤ g for an integrable function g. State and justify the theorem that guarantees ∫ f_n → ∫ f.",
+        "domain": "Real Analysis",
+        "subdomain": "Lebesgue Integration",
+        "complexity": "graduate"
+    },
+    {
+        "id": 5,
+        "question": "Evaluate the integral ∫_{ℝ} e^{−x²} cos(ax) dx for a real parameter a.",
+        "domain": "Analysis",
+        "subdomain": "Fourier Transforms",
+        "complexity": "graduate"
+    },
+    {
+        "id": 6,
+        "question": "Show that the series ∑_{n=2}^∞ 1/(n (ln n)^p) converges if and only if p > 1.",
+        "domain": "Real Analysis",
+        "subdomain": "Series Convergence",
+        "complexity": "graduate"
+    },
+    {
+        "id": 7,
+        "question": "Given a compact Riemannian manifold (M,g), show that the Laplace–Beltrami operator Δ has a discrete spectrum with eigenvalues 0 ≤ λ₁ ≤ λ₂ ≤ ... → ∞.",
+        "domain": "Differential Geometry",
+        "subdomain": "Spectral Geometry",
+        "complexity": "graduate"
+    },
+    {
+        "id": 8,
+        "question": "Let G be a finite group acting on a set X. Prove Burnside's lemma for counting orbits: |X/G| = (1/|G|) ∑_{g∈G} |Fix(g)|.",
+        "domain": "Abstract Algebra",
+        "subdomain": "Group Actions",
+        "complexity": "graduate"
+    },
+    {
+        "id": 9,
+        "question": "Show that every bounded sequence in ℝⁿ has a convergent subsequence.",
+        "domain": "Real Analysis",
+        "subdomain": "Compactness (Bolzano–Weierstrass)",
+        "complexity": "graduate"
+    },
+    {
+        "id": 10,
+        "question": "In ℂ, determine all analytic functions f such that |f(z)| = |z| for all z.",
+        "domain": "Complex Analysis",
+        "subdomain": "Holomorphic Functions",
+        "complexity": "graduate"
+    }
+]
