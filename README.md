@@ -46,9 +46,9 @@ This is an **AI-powered Mathematical Question Refinement Chatbot** that helps us
 
 | # | Requirement | Status | Implementation |
 |---|-------------|--------|----------------|
-| 1 | User input validation | ✅ | LangChain + GPT-4 validation loop |
+| 1 | User input validation | ✅ | LangChain + GPT-5 validation loop |
 | 2 | Mathematical question detection | ✅ | AI-powered classification |
-| 3 | Grammar & clarity refinement | ✅ | GPT-4 text refinement |
+| 3 | Grammar & clarity refinement | ✅ | GPT-5 text refinement |
 | 4 | Iterative feedback loop | ✅ | Session-based state management |
 | 5 | User confirmation workflow | ✅ | Accept/Request Changes buttons |
 | 6 | Semantic similarity check | ✅ | FAISS + OpenAI embeddings |
@@ -100,7 +100,7 @@ This is an **AI-powered Mathematical Question Refinement Chatbot** that helps us
              │                       │
     ┌────────▼────────┐    ┌────────▼─────────┐
     │   LANGCHAIN +   │    │  FAISS VECTOR    │
-    │   OPENAI GPT-4  │    │     DATABASE     │
+    │   OPENAI GPT-5  │    │     DATABASE     │
     │                 │    │                  │
     │ • Validation    │    │ • Embeddings     │
     │ • Refinement    │    │ • Similarity     │
@@ -111,7 +111,7 @@ This is an **AI-powered Mathematical Question Refinement Chatbot** that helps us
     ┌────────▼────────┐    ┌────────▼─────────┐
     │  OPENAI API     │    │  questions.json  │
     │                 │    │                  │
-    │ • GPT-4 Model   │    │ • 10 Graduate    │
+    │ • GPT-5 Model   │    │ • 10 Graduate    │
     │ • Embeddings    │    │   Math Questions │
     │ • API Key Auth  │    │ • Sample Dataset │
     └─────────────────┘    └──────────────────┘
@@ -137,7 +137,7 @@ This is an **AI-powered Mathematical Question Refinement Chatbot** that helps us
 - **Fetch API** - HTTP requests
 
 ### AI/ML:
-- **OpenAI GPT-4** - Text generation & validation
+- **OpenAI GPT-5** - Text generation & validation
 - **OpenAI Embeddings (text-embedding-ada-002)** - 1536-dimensional vectors
 - **FAISS IndexFlatIP** - Inner product similarity with L2 normalization
 
